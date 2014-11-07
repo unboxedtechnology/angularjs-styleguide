@@ -687,13 +687,11 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
 
 ### Singletons
 
-  - Factories are singletons and return an object that contains the members of the service.
+  - Factories are singletons and return an object.  That only exposes public methothds.
 
     Note: [All AngularJS services are singletons](https://docs.angularjs.org/guide/services).
 
 ### Accessible Members Up Top
-
-  - Expose the callable members of the service (it's interface) at the top, using a technique derived from the [Revealing Module Pattern](http://addyosmani.com/resources/essentialjsdesignpatterns/book/#revealingmodulepatternjavascript).
 
     *Why?*: Placing the callable members at the top makes it easy to read and helps you instantly identify which members of the service can be called and must be unit tested (and/or mocked).
 
@@ -703,44 +701,45 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
 
   ```javascript
   /* avoid */
-  function dataService() {
-    var someValue = '';
-    function save() {
-      /* */
-    };
-    function validate() {
-      /* */
-    };
+  function(){
+    function DataFactory() {
+      var someValue = '';
 
-    return {
-        save: save,
-        someValue: someValue,
-        validate: validate
-    };
+      this.save = function() {
+        /* */
+      };
+
+      this.validate = function() {
+        /* */
+      };
+    }
+    return DataFactory;
   }
   ```
 
   ```javascript
   /* recommended */
-  function dataService() {
+  function(){
+    function DataFactory() {
       var someValue = '';
-      var service = {
-          save: save,
-          someValue: someValue,
-          validate: validate
-      };
-      return service;
 
-      ////////////
+      this.save = save;
+      this.validate = validate;
+
+
 
       function save() {
-          /* */
+        /* */
       };
 
       function validate() {
-          /* */
+        /* */
       };
+    }
+    return DataFactory;
   }
+
+
   ```
 
   This way bindings are mirrored across the host object, primitive values cannot update alone using the revealing module pattern
@@ -770,34 +769,27 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
       var isPrimed = false;
       var primePromise;
 
-      var getAvengers = function() {
+
+      this.getAvengers = function() {
          // implementation details go here
       };
 
-      var getAvengerCount = function() {
+      this.getAvengerCount = function() {
           // implementation details go here
       };
 
-      var getAvengersCast = function() {
+      this.getAvengersCast = function() {
          // implementation details go here
       };
 
-      var prime = function() {
+      this.prime = function() {
          // implementation details go here
       };
 
-      var ready = function(nextPromises) {
+      this.ready = function(nextPromises) {
           // implementation details go here
       };
 
-      var service = {
-          getAvengersCast: getAvengersCast,
-          getAvengerCount: getAvengerCount,
-          getAvengers: getAvengers,
-          ready: ready
-      };
-
-      return service;
   }
   ```
 
@@ -811,16 +803,11 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
       var isPrimed = false;
       var primePromise;
 
-      var service = {
-          getAvengersCast: getAvengersCast,
-          getAvengerCount: getAvengerCount,
-          getAvengers: getAvengers,
-          ready: ready
-      };
+      this.getAvengersCast = getAvengersCast;
+      this.getAvengerCount = getAvengerCount;
+      this.getAvengers = getAvengers;
+      this.ready = ready;
 
-      return service;
-
-      ////////////
 
       function getAvengers() {
          // implementation details go here
@@ -851,6 +838,9 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
 ### Separate Data Calls
 
   - Refactor logic for making data operations and interacting with data to a factory. Make data services responsible for XHR calls, local storage, stashing in memory, or any other data operations.
+
+
+    We only use the revealing module pattern in a factory when there is no state!  
 
     *Why?*: The controller's responsibility is for the presentation and gathering of information for the view. It should not care how it gets the data, just that it knows who to ask for it. Separating the data services moves the logic on how to get it to the data service, and lets the controller be simpler and more focused on the view.
 
