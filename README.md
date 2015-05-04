@@ -50,12 +50,12 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
   /* avoid */
   angular
     	.module('app', ['ngRoute'])
-    	.controller('SomeController' , SomeController)
-    	.factory('someFactory' , someFactory);
+    	.controller('SomeCtrl' , SomeCtrl)
+    	.factory('SomeFactory' , SomeFactory);
 
-  function SomeController() { }
+  function SomeCtrl() { }
 
-  function someFactory() { }
+  function SomeFactory() { }
   ```
 
 	The same components are now separated into their own files.
@@ -71,10 +71,10 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
   ```javascript
   /* recommended */
 
-  // someController.js
+  // some.controller.js
   angular
     	.module('app')
-    	.controller('SomeController' , SomeController);
+    	.controller('SomeCtrl' , SomeCtrl);
 
   function SomeController() { }
   ```
@@ -82,12 +82,12 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
   ```javascript
   /* recommended */
 
-  // someFactory.js
+  // some.factory.js
   angular
     	.module('app')
-    	.factory('someFactory' , someFactory);
+    	.factory('SomeFactory' , SomeFactory);
 
-  function someFactory() { }
+  function SomeFactory() { }
   ```
 
 **[Back to top](#table-of-contents)**
@@ -203,18 +203,18 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
   ```javascript
   /* avoid */
   var app = angular.module('app');
-  app.controller('SomeController' , SomeController);
+  app.controller('SomeCtrl' , SomeCtrl);
 
-  function SomeController() { }
+  function SomeCtrl() { }
   ```
 
   ```javascript
   /* recommended */
   angular
       .module('app')
-      .controller('SomeController' , SomeController);
+      .controller('SomeCtrl' , SomeCtrl);
 
-  function SomeController() { }
+  function SomeCtrl() { }
   ```
 
 ### Setting vs Getting
@@ -236,7 +236,7 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
   /* avoid */
   angular
       .module('app')
-      .controller('Dashboard', function() { })
+      .controller('DashboardCtrl', function() { })
       .factory('logger', function() { });
   ```
 
@@ -246,9 +246,9 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
   // dashboard.js
   angular
       .module('app')
-      .controller('Dashboard', Dashboard);
+      .controller('DashboardCtrl', DashboardCtrl);
 
-  function Dashboard() { }
+  function DashboardCtrl() { }
   ```
 
   ```javascript
@@ -276,15 +276,15 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
 
   ```html
   <!-- avoid -->
-  <div ng-controller="Customer">
+  <div ng-controller="CustomerCtrl">
       {{ name }}
   </div>
   ```
 
   ```html
   <!-- recommended -->
-  <div ng-controller="Customer as customerVM">
-     {{ customer.name }}
+  <div ng-controller="CustomerCtrl as customerVM">
+     {{ customerVM.name }}
   </div>
   ```
 
@@ -312,7 +312,7 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
   ```
   We can really see what we are referencing.
   ```html
-  <!-- good and so much more pramatic -->
+  <!-- good and so much more pragmatic -->
   <div ng-controller="UserCtrl as userVM">
     {{userVM.name}}
     <div ng-controller="PurchaseCtrl as purchaseVM">
@@ -324,7 +324,7 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
 
   ```javascript
   /* avoid */
-  function Customer($scope) {
+  function CustomerCtrl($scope) {
       $scope.name = {};
       $scope.sendMessage = function() { };
   }
@@ -332,7 +332,7 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
 
   ```javascript
   /* recommended - but see next section */
-  function Customer() {
+  function CustomerCtrl() {
       this.name = {};
       this.sendMessage = function() { };
   }
@@ -346,7 +346,7 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
 
   ```javascript
   /* avoid */
-  function Customer() {
+  function CustomerCtrl() {
       this.name = {};
       this.sendMessage = function() { };
   }
@@ -354,7 +354,7 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
 
   ```javascript
   /* recommended */
-  function Customer() {
+  function CustomerCtrl() {
       var customerVM = this;
       customerVM.name = {};
       customerVM.sendMessage = function() { };
@@ -368,7 +368,7 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
   var customerVM = this;
   ```
 
-  Note: When creating watches in a controller using `controller as`, you can watch the `customer.*` member using the following syntax. (Create watches with caution as they add more load to the digest cycle.)
+  Note: When creating watches in a controller using `controller as`, you can watch the `customerVM.*` member using the following syntax. (Create watches with caution as they add more load to the digest cycle.)
 
   ```javascript
   $scope.$watch('customerVM.title', function(current, original) {
@@ -387,7 +387,7 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
 
   ```javascript
   /* avoid */
-  function Sessions() {
+  function SessionCtrl() {
       var sessionVM = this;
 
       sessionVM.gotoSession = function() {
@@ -405,7 +405,7 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
 
   ```javascript
   /* recommended */
-  function Sessions() {
+  function SessionCtrl() {
       var sessionVM = this;
 
       sessionVM.gotoSession = gotoSession;
@@ -435,7 +435,7 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
 
   ```javascript
   /* avoid */
-  function Sessions(data) {
+  function SessionCtrl(data) {
       var sessionVM = this;
 
       sessionVM.gotoSession = gotoSession;
@@ -455,7 +455,7 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
 
   ```javascript
   /* recommended */
-  function Sessions(dataservice) {
+  function SessionCtrl(dataservice) {
       var sessionVM = this;
 
       sessionVM.gotoSession = gotoSession;
@@ -484,7 +484,7 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
    * avoid
    * Using function expressions.
    */
-  function Avengers(dataservice, logger) {
+  function AvengersCtrl(dataservice, logger) {
       var avengersVM = this;
       avengersVM.avengers = [];
       avengersVM.title = 'Avengers';
@@ -516,7 +516,7 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
    * Using function declarations
    * and bindable members up top.
    */
-  function Avengers(dataservice, logger) {
+  function AvengersCtrl(dataservice, logger) {
       var avengersVM = this;
       avengersVM.avengers = [];
       avengersVM.getAvengers = getAvengers;
@@ -611,7 +611,7 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
 
   ```html
   <!-- avengers.html -->
-  <div ng-controller="Avengers as avengersVM">
+  <div ng-controller="AvengersCtrl as avengersVM">
   </div>
   ```
 
@@ -627,7 +627,7 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
       $routeProvider
           .when('/avengers', {
               templateUrl: 'avengers.html',
-              controller: 'Avengers',
+              controller: 'AvengersCtrl',
               controllerAs: 'avengersVM'
           });
   }
@@ -645,7 +645,7 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
 
 ### Singletons
 
-  - Services are instantiated with the `new` keyword, use `this` for public methods and variables. Since these are so similar to factories, use a factory instead for consistency.
+  - Services are instantiated with the `new` keyword, use `this` for public methods and variables
 
     Note: [All AngularJS services are singletons](https://docs.angularjs.org/guide/services). This means that there is only one instance of a given service per injector.
 
@@ -656,40 +656,39 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
       .service('logger', logger);
 
   function logger() {
-    this.logError = function(msg) {
-      /* */
-    };
+    this.logError = function(msg) {   /* */     };
   }
   ```
 
   ```javascript
-  // factory
+  // factory that returns literal
   angular
       .module('app')
       .factory('logger', logger);
 
   function logger() {
       return {
-          logError: function(msg) {
-            /* */
-          }
+          logError: function(msg) {  /* */  }
      };
   }
   ```
 
+  ```javascript
+  // factory that returns object
+  angular
+      .module('app')
+      .factory('logger', logger);
+
+  function logger() {
+      return Logger;
+
+      function Logger(){
+        this.logError = function(msg) {  /* */  }
+      }
+  }
+  ```
+
 **[Back to top](#table-of-contents)**
-
-## Factories
-
-### Single Responsibility
-
-  - Factories should have a [single responsibility](http://en.wikipedia.org/wiki/Single_responsibility_principle), that is encapsulated by its context. Once a factory begins to exceed that singular purpose, a new factory should be created.
-
-### Singletons
-
-  - Factories are singletons and return an object.  That only exposes public methothds.
-
-    Note: [All AngularJS services are singletons](https://docs.angularjs.org/guide/services).
 
 ### Accessible Members Up Top
 
@@ -727,14 +726,8 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
       this.validate = validate;
 
 
-
-      function save() {
-        /* */
-      };
-
-      function validate() {
-        /* */
-      };
+      function save() {  /* implementation */  };
+      function validate() {  /* implementation */  };
     }
     return DataFactory;
   }
@@ -742,9 +735,8 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
 
   ```
 
-  This way bindings are mirrored across the host object, primitive values cannot update alone using the revealing module pattern
+  This way bindings are mirrored across the host object, primitive values cannot update alone without going through a function.  
 
-    ![Factories Using "Above the Fold"](https://raw.githubusercontent.com/johnpapa/angularjs-styleguide/master/assets/above-the-fold-2.png)
 
 ### Function Declarations to Hide Implementation Details
 
@@ -809,25 +801,16 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
       this.ready = ready;
 
 
-      function getAvengers() {
-         // implementation details go here
-      }
+      function getAvengers() {  /* implementation details go here */    }
 
-      function getAvengerCount() {
-          // implementation details go here
-      }
+      function getAvengerCount() {  /* implementation details go here */    }
 
-      function getAvengersCast() {
-         // implementation details go here
-      }
+      function getAvengersCast() {  /* implementation details go here */    }
 
-      function prime() {
-          // implementation details go here
-      }
+      function prime() {  /* implementation details go here */    }
 
-      function ready(nextPromises) {
-          // implementation details go here
-      }
+      function ready(nextPromises) {  /* implementation details go here */    }
+
   }
   ```
 
@@ -839,10 +822,7 @@ Never work in a vacuum. I find that the AngularJS community is an incredible gro
 
   - Refactor logic for making data operations and interacting with data to a factory. Make data services responsible for XHR calls, local storage, stashing in memory, or any other data operations.
 
-
-    We only use the revealing module pattern in a factory when there is no state!  
-
-    *Why?*: The controller's responsibility is for the presentation and gathering of information for the view. It should not care how it gets the data, just that it knows who to ask for it. Separating the data services moves the logic on how to get it to the data service, and lets the controller be simpler and more focused on the view.
+    **We only use the revealing module pattern in a factory when there is no state! 
 
     *Why?*: This makes it easier to test (mock or real) the data calls when testing a controller that uses a data service.
 
